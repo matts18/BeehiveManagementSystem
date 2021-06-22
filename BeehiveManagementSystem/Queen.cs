@@ -7,7 +7,7 @@ namespace BeehiveManagementSystem
         public const float HONEY_PER_UNASSIGNED_WORKER = 0.5f;
 
         public override float CostPerShift { get{ return 2.15f; } }
-        private Bee[] workers;
+        private IWorker[] workers;
         private float eggs;
         private float unassignedWorkers = 0;
         public string StatusReport { get { return UpdateStatusReport(); } private set { } }
@@ -15,7 +15,7 @@ namespace BeehiveManagementSystem
 
         public Queen() : base("Queen")
         {
-            workers = new Bee[]{
+            workers = new IWorker[]{
                 new NectarCollector(),
                 new HoneyManufacturer(),
                 new EggCare(this)
@@ -39,11 +39,11 @@ namespace BeehiveManagementSystem
             
         }
 
-        public void AddWorker(Bee bee)
+        public void AddWorker(IWorker bee)
         {
             if(unassignedWorkers >= 1)
             {
-                Array.Resize<Bee>(ref workers, workers.Length + 1);
+                Array.Resize(ref workers, workers.Length + 1);
                 workers[workers.Length - 1] = bee;
                 unassignedWorkers--;
             }
@@ -52,7 +52,7 @@ namespace BeehiveManagementSystem
         protected override void DoJob()
         {
             eggs += EGGS_PER_SHIFT;
-            foreach(Bee bee in workers)
+            foreach(IWorker bee in workers)
             {
                 bee.WorkTheNextShift();
             }
@@ -69,7 +69,7 @@ namespace BeehiveManagementSystem
             string status = HoneyVault.StatusReport;
             status += $"\n\nEgg count: {eggs}\nUnassigned workers: {unassignedWorkers}";
 
-            foreach(var bee in workers)
+            foreach(IWorker bee in workers)
             {
                 switch(bee.Job)
                 {

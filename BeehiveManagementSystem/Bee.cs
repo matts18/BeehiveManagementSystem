@@ -1,7 +1,7 @@
 ﻿using System;
 namespace BeehiveManagementSystem
 {
-    abstract class Bee
+    abstract class Bee : IWorker
     {
         public string Job { get; private set; }
         public abstract float CostPerShift { get; }
